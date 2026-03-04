@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — {{ settings.site_name }}</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: {{ settings.primary_color }}; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: #050508; color: #e5e5e5; min-height: 100vh; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+
+/* Sidebar */
+.admin-sidebar {
+    position: fixed; left: 0; top: 0; bottom: 0; width: 260px;
+    background: #0a0a0e;
+    border-right: 1px solid rgba(255,255,255,0.06);
+    padding: 20px 0; overflow-y: auto; z-index: 50;
+}
+@media (max-width: 1024px) {
+    .admin-sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        z-index: 100;
+    }
+    .admin-sidebar.open { transform: translateX(0); }
+    .admin-main { margin-left: 0 !important; }
+}
+.admin-nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 20px; cursor: pointer;
+    color: rgba(255,255,255,0.4); font-size: 13px; font-weight: 500;
+    transition: all 0.2s ease; border-left: 3px solid transparent;
+}
+.admin-nav-item:hover { background: rgba(255,255,255,0.03); color: rgba(255,255,255,0.8); }
+.admin-nav-item.active {
+    color: #fff; background: rgba(139,92,246,0.08);
+    border-left-color: var(--primary);
+}
+.nav-section { padding: 8px 20px; font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.15); margin-top: 16px; }
+
+/* Main */
+.admin-main { margin-left: 260px; padding: 24px; min-height: 100vh; }
+
+/* Cards */
+.card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px; padding: 24px;
+    margin-bottom: 20px;
+}
+.card-header { font-size: 16px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+
+/* Stat Cards */
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.stat-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px; padding: 20px;
+    position: relative; overflow: hidden;
+}
+.stat-card::after {
+    content: ''; position: absolute; top: -50%; right: -50%;
+    width: 100px; height: 100px; border-radius: 50%;
+    background: var(--primary); opacity: 0.03; filter: blur(30px);
+}
+.stat-value { font-size: 28px; font-weight: 800; color: #fff; }
+.stat-label { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 4px; }
+.stat-icon { font-size: 24px; }
+
+/* Forms */
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.5); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+.form-input {
+    width: 100%; padding: 10px 14px; background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08); border-radius: 10px;
+    color: #fff; font-size: 14px; outline: none;
+    font-family: 'Inter', sans-serif;
+    transition: border-color 0.2s ease;
+}
+.form-input:focus { border-color: var(--primary); }
+.form-input::placeholder { color: rgba(255,255,255,0.2); }
+textarea.form-input { min-height: 80px; resize: vertical; }
+select.form-input { appearance: none; cursor: pointer; }
+
+.btn {
+    padding: 10px 20px; border-radius: 10px; font-size: 13px; font-weight: 600;
+    cursor: pointer; border: none; transition: all 0.2s ease;
+    font-family: 'Inter', sans-serif; display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+.btn-danger { background: #EF4444; color: #fff; }
+.btn-danger:hover { opacity: 0.9; }
+.btn-success { background: #10B981; color: #fff; }
+.btn-ghost { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); }
+.btn-ghost:hover { background: rgba(255,255,255,0.1); color: #fff; }
+.btn-sm { padding: 6px 14px; font-size: 12px; border-radius: 8px; }
+
+/* Tables */
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th {
+    text-align: left; padding: 10px 14px; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    color: rgba(255,255,255,0.3); border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.data-table td {
+    padding: 10px 14px; font-size: 13px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.7);
+}
+.data-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+/* Badge */
+.badge {
+    padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;
+    display: inline-block;
+}
+.badge-green { background: rgba(16,185,129,0.15); color: #34D399; }
+.badge-red { background: rgba(239,68,68,0.15); color: #FCA5A5; }
+.badge-yellow { background: rgba(245,158,11,0.15); color: #FCD34D; }
+.badge-purple { background: rgba(139,92,246,0.15); color: #A78BFA; }
+
+/* Sections */
+.section { display: none; }
+.section.active { display: block; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Toast */
+.toast {
+    position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+    background: #1a1a2e; border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px; padding: 14px 24px; font-size: 13px;
+    color: #fff; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    animation: slideUp 0.3s ease;
+    display: flex; align-items: center; gap: 10px;
+}
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+.mobile-menu-btn {
+    display: none; position: fixed; top: 16px; left: 16px; z-index: 90;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px; width: 40px; height: 40px; color: #fff;
+    cursor: pointer; align-items: center; justify-content: center; font-size: 18px;
+}
+@media (max-width: 1024px) { .mobile-menu-btn { display: flex; } }
+
+/* Chart placeholder */
+.mini-chart { display: flex; align-items: flex-end; gap: 4px; height: 60px; margin-top: 12px; }
+.mini-bar {
+    flex: 1; background: linear-gradient(to top, var(--primary), var(--primary)66);
+    border-radius: 3px 3px 0 0; min-height: 4px;
+    transition: height 0.3s ease;
+}
+
+/* Switch */
+.switch {
+    position: relative; width: 44px; height: 24px;
+    display: inline-block; cursor: pointer;
+}
+.switch input { display: none; }
+.switch .slider {
+    position: absolute; inset: 0;
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px; transition: all 0.3s ease;
+}
+.switch .slider::after {
+    content: ''; position: absolute;
+    left: 3px; top: 3px; width: 18px; height: 18px;
+    background: #fff; border-radius: 50%;
+    transition: all 0.3s ease;
+}
+.switch input:checked + .slider { background: var(--primary); }
+.switch input:checked + .slider::after { left: 23px; }
+</style>
+</head>
+<body>
+
+<button class="mobile-menu-btn" onclick="document.getElementById('adminSidebar').classList.toggle('open')">☰</button>
+
+<div class="admin-sidebar" id="adminSidebar">
+    <div style="padding:0 20px 20px;display:flex;align-items:center;gap:10px;">
+        <span style="font-size:24px;">⚡</span>
+        <div>
+            <div style="font-size:14px;font-weight:800;color:#fff;">Admin Panel</div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.3);">{{ settings.site_name }}</div>
+        </div>
+    </div>
+
+    <div class="nav-section">Overview</div>
+    <div class="admin-nav-item active" onclick="showSection('dashboard', this)">📊 Dashboard</div>
+    <div class="admin-nav-item" onclick="showSection('analytics', this)">📈 Analytics</div>
+
+    <div class="nav-section">Branding</div>
+    <div class="admin-nav-item" onclick="showSection('branding', this)">🎨 Site Branding</div>
+    <div class="admin-nav-item" onclick="showSection('appearance', this)">🖼️ Appearance</div>
+    <div class="admin-nav-item" onclick="showSection('media', this)">🎬 Media & Audio</div>
+
+    <div class="nav-section">AI Engine</div>
+    <div class="admin-nav-item" onclick="showSection('ai-config', this)">🧠 AI Configuration</div>
+    <div class="admin-nav-item" onclick="showSection('api-keys', this)">🔑 API Keys</div>
+    <div class="admin-nav-item" onclick="showSection('knowledge', this)">📚 Knowledge Sources</div>
+    <div class="admin-nav-item" onclick="showSection('instructions', this)">📝 System Instructions</div>
+
+    <div class="nav-section">Users</div>
+    <div class="admin-nav-item" onclick="showSection('users', this)">👥 User Management</div>
+    <div class="admin-nav-item" onclick="showSection('security', this)">🔒 Security</div>
+
+    <div class="nav-section">Content</div>
+    <div class="admin-nav-item" onclick="showSection('announcements', this)">📢 Announcements</div>
+    <div class="admin-nav-item" onclick="showSection('commands', this)">⚡ Custom Commands</div>
+    <div class="admin-nav-item" onclick="showSection('broadcast', this)">📡 Broadcast</div>
+
+    <div class="nav-section">System</div>
+    <div class="admin-nav-item" onclick="showSection('system', this)">⚙️ System Controls</div>
+    <div class="admin-nav-item" onclick="showSection('logs', this)">📋 System Logs</div>
+    <div class="admin-nav-item" onclick="showSection('advanced', this)">🛠️ Advanced</div>
+    <div class="admin-nav-item" onclick="showSection('password', this)">🔐 Change Password</div>
+
+    <div style="margin-top:auto;padding:16px 20px;border-top:1px solid rgba(255,255,255,0.06);">
+        <a href="/chat" style="color:rgba(255,255,255,0.4);font-size:13px;text-decoration:none;display:flex;align-items:center;gap:8px;">
+            ← Back to Chat
+        </a>
+    </div>
+</div>
+
+<div class="admin-main">
+    <div class="section active" id="section-dashboard">
+        <h1 style="font-size:24px;font-weight:800;margin-bottom:24px;">📊 Dashboard</h1>
+        <div class="stat-grid" id="statGrid"></div>
+        <div class="card">
+            <div class="card-header">📈 Message Trends (7 Days)</div>
+            <div class="mini-chart" id="trendChart"></div>
+        </div>
+        <div class="card">
+            <div class="card-header">🏆 Top Users</div>
+            <table class="data-table" id="topUsersTable">
+                <thead><tr><th>User</th><th>Messages</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="section" id="section-analytics">
+        <h1 style="font-size:24px;font-weight:800;margin-bottom:24px;">📈 Analytics</h1>
+        <div class="stat-grid" id="analyticsGrid"></div>
+        <div class="card">
+            <div class="card-header">Activity Overview</div>
+            <p style="color:rgba(255,255,255,0.4);font-size:14px;">Real-time analytics data loaded from database.</p>
+        </div>
+    </div>
+
+    <div class="section" id="section-branding">
+        <h1 style="font-size:24px;font-weight:800;margin-bottom:24px;">🎨 Site Branding</h1>
+        <div class="card">
+            <div class="form-group">
+                <label class="form-label">Site Name</label>
+                <input type="text" class="form-input" id="set-site_name" placeholder="NexusAI Pro">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Site Tagline</label>
+                <input type="text" class="form-input" id="set-site_tagline" placeholder="God-Level AI">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Logo Emoji</label>
+                <input type="text" class="form-input" id="set-site_logo_emoji" placeholder="🧠">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Logo URL (Optional, overrides emoji)</label>
+                <input type="text" class="form-input" id="set-site_logo_url" placeholder="https://...">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Welcome Message</label>
+                <textarea class="form-input" id="set-welcome_message" placeholder="Hello! How can I help you?"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Chat Placeholder</label>
+                <input type="text" class="form-input" id="set-chat_placeholder" placeholder="Ask me anything...">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Footer Text</label>
+                <input type="text" class="form-input" id="set-footer_text" placeholder="Powered by NexusAI Pro">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Meta Description</label>
+                <textarea class="form-input" id="set-meta_description" placeholder="SEO description"></textarea>
+            </div>
+            <button class="btn btn-primary" onclick="saveSettings(['site_name','site_tagline','site_logo_emoji','site_logo_url','welcome_message','chat_placeholder','footer_text','meta_description'])">💾 Save Branding</button>
+        </div>
+    </div>
+
+    <div class="section" id="section-appearance">
+        <h1 style="font-size:24px;font-weight:800;margin-bottom:24px;">🖼️ Appearance</h1>
+        <div class="card">
+            <div class="form-group">
+                <label class="form-label">Primary Color</label>
+                <div style="display:flex;gap:10px;align-items:center;">
+                    <input type="color" id="set-primary_color" value="#8B5CF6" style="width:50px;height:36px;border:none;border-radius:8px;cursor:pointer;">
+                    <input type="text" class="form-input" id="set-primary_color_text" placeholder="#8B5CF6" style="width:150px;" oninput="document.getElementById('set-primary_color').value=this.value">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Secondary Color</label>
+                <div style="display:flex;gap:10px;align-items:center;">
+                    <input type="color" id="set-secondary_color" value="#06B6D4" style="width:50px;height:36px;border:none;border-radius:8px;cursor:pointer;">
+                    <input type="text" class="form-input" id="set-secondary_color_text" placeholder="#06B6D4" style="width:150px;">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Accent Color</label>
+                <div style="display:flex;gap:10px;align-items:center;">
+                    <input type="color" id="set-accent_color" value="#F59E0B" style="width:50px;height:36px;border:none;border-radius:8px;cursor:pointer;">
+                    <input type="text" class="form-input" id="set-accent_color_text" placeholder="#F59E0B" style="width:150px;">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Custom CSS</label>
+                <textarea class="form-input" id="set-custom_css" placeholder="/* Custom styles */" style="font-family:monospace;min-height:120px;"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Custom JavaScript</label>
+                <textarea class="form-input" id="set-custom_js" placeholder="// Custom JS" style="font-family:monospace;min-height:80px;"></textarea>
+            </div>
+            <button class="btn btn-primary" onclick="saveColors()">💾 Save Appearance</button>
+        </div>
+    </div>
+
+    <div class="section" id="section-media">
+        <h1 style="font-size:24px;font-weight:800;margin-bottom:24px;">🎬 Media & Audio</h1>
+        <div class="card">
+            <div class="card-header">🎵 Login Audio (Hidden)</div>
+            <p style="color:rgba(255,255,255,0.4);font-size:12px;margin-bottom:16px;">This audio plays automatically when a user logs in. The player is hidden — the user won't see it.</p>
+            <div class="form-group">
+                <label class="form-label">Audio URL (MP3/WAV/OGG)</label>
+                <input type="text" class="form-input" id="set-login_audio_url" placeholder="https://example.com/song.mp3">
+            </div>
+            <div class="form-group" style="display:flex;align-items:center;gap:12px;">
+                <label class="switch">
+                    <input type="checkbox" id="set-enable_login_audio">
+                    <span class="slider"></span>
+                </label>
+                <span style="font-size:13px;color:rgba(255,255,255,0.5);">Enable Login Audio</span>
+            </div>
+            <button class="btn btn-primary" onclick="saveMediaSettings()">💾 Save Audio Settings</button>
+        </div>
+        <div class="card">
+            <div class="card-header">🎥 Background Video</div>
+            <p style="color:rgba(255,255,255,0.4);font-size:12px;margin-bottom:16px;">Set a background video for the login page. It plays muted and looped.</p>
+            <div class="form-group">
+                <label class="form-label">Video URL (MP4)</label>
+                <input type="text" class="form-input" id="set-background_video_url" placeholder="https://example.com/bg-video.mp4">
+            </div>
+            <button class="btn btn-primary" onclick="saveSettings(['background_video_url'])">💾 Save Video</button>
+        </div>
+    </div>
+
+    <div class="section" id="section-ai-config">
+        <h1 style="font-size:24px;font-weight:800;margin-bottom:24px;">🧠 AI Configuration</h1>
+        <div class="card">
+            <div class="form-group">
+                <label class="form-label">Default Model</label>
+                <select class="form-input" id="set-default_model"></select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Temperature (0.0 - 2.0)</label>
+                <input type="number" class="form-input" id="set-temperature" min="0" max="2" step="0.1" value="0.7">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Max Tokens</label>
+                <input type="number" class="form-input" id="set-max_tokens" min="256" max="32768" value="4096">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Top P</label>
+                <input type="number" class="form-input" id="set-top_p" min="0" max="1" step="0.1" value="0.9">
+            </div>
+            <div class="form-group" style="display:flex;align-items:center;gap:12px;">
+                <label class="switch">
+                    <input type="checkbox" id="set-enable_rag" checked>
+                    <span class="slider"></span>
+                </label>
+                <span style="font-size:13px;color:rgba(255,255,255,0.5);">Enable RAG (Knowledge Search)</span>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Max RAG Sources per Query</label>
+                <input type="number" class="form-input" id="set-max_rag_sources" min="1" max="20" value="8">
+            </div>
+            <button class="btn btn-primary" onclick="saveAIConfig()">💾 Save AI Config</button>
+        </div>
+    </div>
+
+    <div class="section" id="section-api-keys">
+        <h1 style="font-size:24px;font-weight:800;margin-bottom:24px;">🔑 API Keys</h1>
+        <div class="card">
+            <div class="card-header">Add / Update API Key</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                <input type="text" class="form-input" id="newKeyService" placeholder="Service name (e.g. groq)" style="flex:1;min-width:150px;">
+                <input type="text" class="form-input" id="newKeyValue" placeholder="API Key" style="flex:2;min-width:200px;">
+                <button class="btn btn-primary" onclick="addApiKey()">Add Key</button>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">Active API Keys</div>
+            <div style="overflow-x:auto;">
+                <table class="data-table" id="apiKeysTable">
+                    <thead><tr><th>Service</th><th>Key</th><th>Status</th><th>Used</th><th>Actions</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="section" id="section-knowledge">
+        <h1 style="font-size:24px;font-weight:800;margin-bottom:24px;">📚 Knowledge Sources</h1>
+        <div class="card">
+            <div class="card-header" id="sourcesCount">Loading...</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;" id="sourceCategories"></div>
+            <div style="max-height:500px;overflow-y:auto;">
+                <table class="data-table" id="sourcesTable">
+                    <thead><tr><th>#</th><th>Source</th><th>Category</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="section" id="section-instructions">
+        <h1 style="font-size:24px;font-weight:800;margin-bottom:24px;">📝 System Instructions</h1>
+        <div class="card">
+            <p style="color:rgba(255,255,255,0.4);font-size:12px;margin-bottom:16px;">Custom instructions appended to every AI conversation. Use this to define behavior, personality, restrictions, etc.</p>
+            <div class="form-group">
+                <textarea class="form-input" id="set-system_instructions" style="min-height:200px;" placeholder="You are a helpful assistant that..."></textarea>
+            </div>
+            <button class="btn btn-primary" onclick="saveSettings(['system_instructions'])">💾 Save Instructions</button>
+        </div>
+    </div>
+
+    <div class="section" id="section-users">
+        <h1 style="font-size:24px;font-weight:800;margin-bottom:24px;">👥 User Management</h1>
+        <div class="card">
+            <div style="overflow-x:auto;">
+                <table class="data-table" id="usersTable">
+                    <thead><tr><th>User</th><th>Email</th><th>Role</th><th>Status</th><th>Messages</th><th>Last Login</th><th>Actions</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="section" id="section-security">
+        <h1 style="font-size:24px;font-weight:800;margin-bottom:24px;">🔒 Security Settings</h1>
+        <div class="card">
+            <div class="form-group" style="display:flex;align-items:center;gap:12px;">
+                <label class="switch">
+                    <input type="checkbox" id="set-enable_registration" checked>
+                    <span class="slider"></span>
+                </label>
+                <span style="font-size:13px;color:rgba(255,255,255,0.5);">Allow New Registrations</span>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Rate Limit (messages/minute)</label>
+                <input type="number" class="form-input" id="set-rate_limit_per_minute" value="30">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Max Message Length (chars)</label>
+                <input type="number" class="form-input" id="set-max_message_length" value="10000">
+            </div>
+            <button class="btn btn-primary" onclick="saveSecuritySettings()">💾 Save Security</button>
+        </div>
+    </div>
+
+    <div class="section" id="section-announcements">
+        <h1 style="font-size:24px;font-weight:800;margin-bottom:24px;">📢 Announcements</h1>
+        <div class="card">
+            <div class="card-header">Create Announcement</div>
+            <div class="form-group">
+                <input type="text" class="form-input" id="annTitle" placeholder="Title">
+            </div>
+            <div class="form-group">
+                <textarea class="form-input" id="annContent" placeholder="Announcement content..."></textarea>
+            </div>
+            <div class="form-group">
+                <select class="form-input" id="annPriority" style="width:200px;">
+                    <option value="low">Low Priority</option>
+                    <option value="normal" selected>Normal</option>
+                    <option value="high">High Priority</option>
+                    <option value="critical">Critical</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" onclick="createAnnouncement()">📢 Publish</button>
+        </div>
+        <div class="card">
+            <div class="card-header">Active Announcements</div>
+            <div id="announcementsList"></div>
+        </div>
+    </div>
+
+    <div class="section" id="section-commands">
+        <h1 style="font-size:24px;font-weight:800;margin-bottom:24px;">⚡ Custom Commands</h1>
+        <div class="card">
+            <div class="card-header">Create Command</div>
+            <div class="form-group">
+                <input type="text" class="form-input" id="cmdCommand" placeholder="/command">
+            </div>
+            <div class="form-group">
+                <textarea class="form-input" id="cmdResponse" placeholder="Response text..."></textarea>
+            </div>
+            <button class="btn btn-primary" onclick="createCommand()">⚡ Add Command</button>
+        </div>
+        <div class="card">
+            <div class="card-header">Commands</div>
+            <div id="commandsList"></div>
+        </div>
+    </div>
+
+    <div class="section" id="section-broadcast">
+        <h1 style="font-size:24px;font-weight:800;margin-bottom:24px;">📡 Broadcast Message</h1>
+        <div class="card">
+            <p style="color:rgba(255,255,255,0.4);font-size:12px;margin-bottom:16px;">Send a real-time message to all connected users.</p>
+            <div class="form-group">
+                <textarea class="form-input" id="broadcastMsg" placeholder="Type your broadcast message..."></textarea>
+            </div>
+            <button class="btn btn-primary" onclick="sendBroadcast()">📡 Send Broadcast</button>
+        </div>
+    </div>
+
+    <div class="section" id="section-system">
+        <h1 style="font-size:24px;font-weight:800;margin-bottom:24px;">⚙️ System Controls</h1>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;">
+            <div class="card" style="border-color:rgba(239,68,68,0.2);">
+                <div class="card-header" style="color:#EF4444;">🔴 Shutdown System</div>
+                <p style="color:rgba(255,255,255,0.4);font-size:12px;margin-bottom:16px;">Completely block access to the platform for all non-admin users.</p>
+                <button class="btn btn-danger" onclick="toggleShutdown()">Toggle Shutdown</button>
+            </div>
+            <div class="card" style="border-color:rgba(245,158,11,0.2);">
+                <div class="card-header" style="color:#F59E0B;">🔧 Maintenance Mode</div>
+                <p style="color:rgba(255,255,255,0.4);font-size:12px;margin-bottom:16px;">Show maintenance page to all non-admin users.</p>
+                <div class="form-group">
+                    <input type="text" class="form-input" id="maintenanceMsg" placeholder="Maintenance message...">
+                </div>
+                <button class="btn" style="background:#F59E0B;color:#000;" onclick="toggleMaintenance()">Toggle Maintenance</button>
+            </div>
+            <div class="card" style="border-color:rgba(239,68,68,0.2);">
+                <div class="card-header">🗑️ Clear All Chats</div>
+                <p style="color:rgba(255,255,255,0.4);font-size:12px;margin-bottom:16px;">Permanently delete ALL chat history for ALL users.</p>
+                <button class="btn btn-danger" onclick="clearAllChats()">Delete All Chats</button>
+            </div>
+            <div class="card">
+                <div class="card-header">📊 Clear Analytics</div>
+                <p style="color:rgba(255,255,255,0.4);font-size:12px;margin-bottom:16px;">Clear all analytics events data.</p>
+                <button class="btn btn-ghost" onclick="clearAnalytics()">Clear Analytics</button>
+            </div>
+            <div class="card">
+                <div class="card-header">📋 Clear Logs</div>
+                <p style="color:rgba(255,255,255,0.4);font-size:12px;margin-bottom:16px;">Clear all system logs.</p>
+                <button class="btn btn-ghost" onclick="clearLogs()">Clear Logs</button>
+            </div>
+            <div class="card">
+                <div class="card-header">📦 Export Data</div>
+                <p style="color:rgba(255,255,255,0.4);font-size:12px;margin-bottom:16px;">Export all platform data as JSON.</p>
+                <button class="btn btn-ghost" onclick="exportData()">Export JSON</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="section" id="section-logs">
+        <h1 style="font-size:24px;font-weight:800;margin-bottom:24px;">📋 System Logs</h1>
+        <div class="card">
+            <div style="max-height:500px;overflow-y:auto;" id="logsContainer"></div>
+        </div>
+    </div>
+
+    <div class="section" id="section-advanced">
+        <h1 style="font-size:24px;font-weight:800;margin-bottom:24px;">🛠️ Advanced Settings</h1>
+        <div class="card">
+            <div class="form-group" style="display:flex;align-items:center;gap:12px;">
+                <label class="switch">
+                    <input type="checkbox" id="set-enable_markdown" checked>
+                    <span class="slider"></span>
+                </label>
+                <span style="font-size:13px;color:rgba(255,255,255,0.5);">Enable Markdown Rendering</span>
+            </div>
+            <div class="form-group" style="display:flex;align-items:center;gap:12px;">
+                <label class="switch">
+                    <input type="checkbox" id="set-enable_code_highlight" checked>
+                    <span class="slider"></span>
+                </label>
+                <span style="font-size:13px;color:rgba(255,255,255,0.5);">Enable Code Highlighting</span>
+            </div>
+            <div class="form-group" style="display:flex;align-items:center;gap:12px;">
+                <label class="switch">
+                    <input type="checkbox" id="set-enable_analytics" checked>
+                    <span class="slider"></span>
+                </label>
+                <span style="font-size:13px;color:rgba(255,255,255,0.5);">Enable Analytics Tracking</span>
+            </div>
+            <div class="form-group" style="display:flex;align-items:center;gap:12px;">
+                <label class="switch">
+                    <input type="checkbox" id="set-enable_announcements" checked>
+                    <span class="slider"></span>
+                </label>
+                <span style="font-size:13px;color:rgba(255,255,255,0.5);">Enable Announcements</span>
+            </div>
+            <button class="btn btn-primary" onclick="saveAdvancedSettings()">💾 Save Advanced</button>
+        </div>
+    </div>
+
+    <div class="section" id="section-password">
+        <h1 style="font-size:24px;font-weight:800;margin-bottom:24px;">🔐 Change Admin Password</h1>
+        <div class="card" style="max-width:500px;">
+            <div class="form-group">
+                <label class="form-label">Current Password</label>
+                <input type="password" class="form-input" id="currentPw" placeholder="Enter current password">
+            </div>
+            <div class="form-group">
+                <label class="form-label">New Password</label>
+                <input type="password" class="form-input" id="newPw" placeholder="Enter new password">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Confirm New Password</label>
+                <input type="password" class="form-input" id="confirmPw" placeholder="Confirm new password">
+            </div>
+            <button class="btn btn-primary" onclick="changePassword()">🔐 Update Password</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ── STATE ──
+let settings = {};
+let apiKeys = [];
+let models = [];
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', () => {
+    loadDashboard();
+    loadSettings();
+    loadUsers();
+    loadSources();
+    loadAnnouncements();
+    loadCommands();
+});
+
+// ── NAVIGATION ──
+function showSection(id, el) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.admin-nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('section-' + id).classList.add('active');
+    if (el) el.classList.add('active');
+    
+    // Close mobile sidebar
+    document.getElementById('adminSidebar').classList.remove('open');
+}
+
+// ── TOAST ──
+function toast(message, type='success') {
+    const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.innerHTML = `${icons[type] || '✅'} ${message}`;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+}
+
+// ── API HELPER ──
+async function api(url, method='GET', body=null) {
+    const opts = { method, headers: { 'Content-Type': 'application/json' } };
+    if (body) opts.body = JSON.stringify(body);
+    const res = await fetch(url, opts);
+    return res.json();
+}
+
+// ── DASHBOARD ──
+async function loadDashboard() {
+    try {
+        const data = await api('/api/admin/stats');
+        
+        document.getElementById('statGrid').innerHTML = `
+            <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value">${data.total_users}</div><div class="stat-label">Total Users</div></div>
+            <div class="stat-card"><div class="stat-icon">💬</div><div class="stat-value">${data.total_messages}</div><div class="stat-label">Total Messages</div></div>
+            <div class="stat-card"><div class="stat-icon">📂</div><div class="stat-value">${data.total_chats}</div><div class="stat-label">Total Chats</div></div>
+            <div class="stat-card"><div class="stat-icon">🟢</div><div class="stat-value">${data.today_active_users}</div><div class="stat-label">Active Today</div></div>
+            <div class="stat-card"><div class="stat-icon">📨</div><div class="stat-value">${data.today_messages}</div><div class="stat-label">Messages Today</div></div>
+            <div class="stat-card"><div class="stat-icon">🆕</div><div class="stat-value">${data.today_new_users}</div><div class="stat-label">New Users Today</div></div>
+            <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-value">${data.week_messages}</div><div class="stat-label">Messages This Week</div></div>
+            <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-value">${data.total_sources}</div><div class="stat-label">Knowledge Sources</div></div>
+        `;
+        
+        // Trend chart
+        const maxCount = Math.max(...data.trends.map(t => t.count), 1);
+        document.getElementById('trendChart').innerHTML = data.trends.map(t => 
+            `<div class="mini-bar" style="height:${(t.count / maxCount) * 100}%" title="${t.date}: ${t.count} msgs"><div style="text-align:center;font-size:9px;color:rgba(255,255,255,0.3);margin-top:-18px;">${t.count}</div></div>`
+        ).join('');
+        
+        // Top users
+        document.querySelector('#topUsersTable tbody').innerHTML = data.top_users.map(u =>
+            `<tr><td>${u.username}</td><td>${u.messages}</td></tr>`
+        ).join('');
+        
+        // Analytics grid
+        document.getElementById('analyticsGrid').innerHTML = document.getElementById('statGrid').innerHTML;
+        
+        // Logs
+        document.getElementById('logsContainer').innerHTML = data.recent_logs.map(l => `
+            <div style="padding:8px 12px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:12px;display:flex;gap:10px;">
+                <span class="badge ${l.level === 'critical' ? 'badge-red' : l.level === 'warning' ? 'badge-yellow' : 'badge-green'}">${l.level}</span>
+                <span style="color:rgba(255,255,255,0.3);">${new Date(l.time).toLocaleString()}</span>
+                <span style="color:rgba(255,255,255,0.6);flex:1;">${l.message}</span>
+                <span class="badge badge-purple">${l.source}</span>
+            </div>
+        `).join('') || '<p style="color:rgba(255,255,255,0.3);padding:20px;">No logs</p>';
+    } catch (e) { console.error("Error loading dashboard", e); }
+}
+
+// ── SETTINGS & CONFIG SAVING ──
+async function loadSettings() {
+    try {
+        const data = await api('/api/admin/settings');
+        settings = data.settings || {};
+        apiKeys = data.api_keys || [];
+        models = data.available_models || [];
+        
+        // Populate form fields
+        for (const [key, value] of Object.entries(settings)) {
+            const el = document.getElementById('set-' + key);
+            if (el) {
+                if (el.type === 'checkbox') el.checked = value === 'true';
+                else el.value = value;
+            }
+            const textEl = document.getElementById('set-' + key + '_text');
+            if (textEl) textEl.value = value;
+        }
+        
+        // Models dropdown
+        const modelSelect = document.getElementById('set-default_model');
+        modelSelect.innerHTML = models.map(m => 
+            `<option value="${m}" ${m === settings.default_model ? 'selected' : ''}>${m}</option>`
+        ).join('');
+        
+        renderApiKeys();
+    } catch (e) { console.error("Error loading settings", e); }
+}
+
+async function saveSettings(keys) {
+    const payload = {};
+    keys.forEach(k => {
+        const el = document.getElementById('set-' + k);
+        if (el) {
+            payload[k] = el.type === 'checkbox' ? (el.checked ? 'true' : 'false') : el.value;
+        }
+    });
+    const res = await api('/api/admin/settings', 'PUT', payload);
+    if (res.success) toast('Settings saved successfully!');
+    else toast(res.error || 'Failed to save', 'error');
+}
+
+function saveColors() { saveSettings(['primary_color', 'secondary_color', 'accent_color', 'custom_css', 'custom_js']); }
+function saveMediaSettings() { saveSettings(['login_audio_url', 'enable_login_audio']); }
+function saveAIConfig() { saveSettings(['default_model', 'temperature', 'max_tokens', 'top_p', 'enable_rag', 'max_rag_sources']); }
+function saveSecuritySettings() { saveSettings(['enable_registration', 'rate_limit_per_minute', 'max_message_length']); }
+function saveAdvancedSettings() { saveSettings(['enable_markdown', 'enable_code_highlight', 'enable_analytics', 'enable_announcements']); }
+
+// ── API KEYS ──
+function renderApiKeys() {
+    document.querySelector('#apiKeysTable tbody').innerHTML = apiKeys.map(k => `
+        <tr>
+            <td><strong>${k.service_name}</strong></td>
+            <td style="font-family:monospace;font-size:12px;">${k.api_key}</td>
+            <td><span class="badge ${k.is_active ? 'badge-green' : 'badge-red'}">${k.is_active ? 'Active' : 'Inactive'}</span></td>
+            <td>${k.usage_count}</td>
+            <td style="display:flex;gap:4px;">
+                <button class="btn btn-sm btn-ghost" onclick="toggleApiKey(${k.id})">${k.is_active ? 'Disable' : 'Enable'}</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteApiKey(${k.id})">Delete</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+async function addApiKey() {
+    const serviceName = document.getElementById('newKeyService').value;
+    const apiKey = document.getElementById('newKeyValue').value;
+    if (!serviceName || !apiKey) return toast('Please enter service and key', 'warning');
+    
+    const res = await api('/api/admin/api-keys', 'POST', { service_name: serviceName, api_key: apiKey });
+    if (res.success) {
+        toast('API Key added successfully');
+        document.getElementById('newKeyService').value = '';
+        document.getElementById('newKeyValue').value = '';
+        loadSettings();
+    } else toast(res.error, 'error');
+}
+
+async function toggleApiKey(id) {
+    const res = await api(`/api/admin/api-keys/${id}/toggle`, 'PUT');
+    if (res.success) loadSettings();
+}
+
+async function deleteApiKey(id) {
+    if (!confirm('Are you sure you want to delete this key?')) return;
+    const res = await api(`/api/admin/api-keys/${id}`, 'DELETE');
+    if (res.success) loadSettings();
+}
+
+// ── USERS ──
+async function loadUsers() {
+    try {
+        const users = await api('/api/admin/users');
+        document.querySelector('#usersTable tbody').innerHTML = users.map(u => `
+            <tr>
+                <td>${u.username}</td>
+                <td>${u.email || '-'}</td>
+                <td><span class="badge ${u.is_admin ? 'badge-purple' : 'badge-green'}">${u.is_admin ? 'Admin' : 'User'}</span></td>
+                <td><span class="badge ${u.is_banned ? 'badge-red' : 'badge-green'}">${u.is_banned ? 'Banned' : 'Active'}</span></td>
+                <td>${u.total_messages}</td>
+                <td>${u.last_login ? new Date(u.last_login).toLocaleString() : 'Never'}</td>
+                <td style="display:flex;gap:4px;">
+                    <button class="btn btn-sm btn-ghost" onclick="toggleAdmin(${u.id})">Admin</button>
+                    <button class="btn btn-sm ${u.is_banned ? 'btn-success' : 'btn-ghost'}" onclick="banUser(${u.id})">${u.is_banned ? 'Unban' : 'Ban'}</button>
+                    <button class="btn btn-sm btn-ghost" onclick="resetUserPassword(${u.id}, '${u.username}')">Reset PW</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteUser(${u.id})">Del</button>
+                </td>
+            </tr>
+        `).join('');
+    } catch(e) { console.error('Error loading users', e); }
+}
+
+async function toggleAdmin(id) {
+    const res = await api(`/api/admin/users/${id}/toggle-admin`, 'PUT');
+    if (res.success) { toast('Admin status updated'); loadUsers(); }
+    else toast(res.error, 'error');
+}
+
+async function banUser(id) {
+    const res = await api(`/api/admin/users/${id}/ban`, 'PUT');
+    if (res.success) { toast('User ban status updated'); loadUsers(); }
+    else toast(res.error, 'error');
+}
+
+async function deleteUser(id) {
+    if (!confirm('Are you sure you want to delete this user permanently?')) return;
+    const res = await api(`/api/admin/users/${id}`, 'DELETE');
+    if (res.success) { toast('User deleted'); loadUsers(); }
+    else toast(res.error, 'error');
+}
+
+async function resetUserPassword(id, username) {
+    const newPw = prompt(`Enter new password for ${username} (min 6 chars):`);
+    if (!newPw || newPw.length < 6) return toast('Password must be at least 6 characters', 'warning');
+    const res = await api(`/api/admin/users/${id}/reset-password`, 'PUT', { password: newPw });
+    if (res.success) toast(`Password reset for ${username}`);
+    else toast(res.error, 'error');
+}
+
+// ── KNOWLEDGE SOURCES ──
+async function loadSources() {
+    try {
+        const res = await api('/api/admin/sources');
+        document.getElementById('sourcesCount').innerText = `Active Sources: ${res.total}`;
+        document.getElementById('sourceCategories').innerHTML = res.categories.map(c => 
+            `<span class="badge badge-purple">${c}</span>`
+        ).join('');
+        document.querySelector('#sourcesTable tbody').innerHTML = res.sources.map((s, i) => `
+            <tr>
+                <td>${i + 1}</td>
+                <td><strong>${s.name}</strong><br><small style="color:rgba(255,255,255,0.4)">${s.url}</small></td>
+                <td><span class="badge badge-green">${s.category}</span></td>
+            </tr>
+        `).join('');
+    } catch(e) { console.error('Error loading sources', e); }
+}
+
+// ── ANNOUNCEMENTS ──
+async function loadAnnouncements() {
+    try {
+        const anns = await api('/api/admin/announcements');
+        document.getElementById('announcementsList').innerHTML = anns.map(a => `
+            <div style="padding:16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:12px;margin-bottom:12px;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                    <strong>${a.title}</strong>
+                    <span class="badge badge-purple">${a.priority}</span>
+                </div>
+                <p style="font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:12px;">${a.content}</p>
+                <div style="display:flex;gap:8px;">
+                    <button class="btn btn-sm ${a.is_active ? 'btn-ghost' : 'btn-success'}" onclick="toggleAnnouncement(${a.id})">${a.is_active ? 'Deactivate' : 'Activate'}</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteAnnouncement(${a.id})">Delete</button>
+                </div>
+            </div>
+        `).join('') || '<p style="color:rgba(255,255,255,0.3);">No announcements</p>';
+    } catch(e) { console.error('Error loading announcements', e); }
+}
+
+async function createAnnouncement() {
+    const title = document.getElementById('annTitle').value;
+    const content = document.getElementById('annContent').value;
+    const priority = document.getElementById('annPriority').value;
+    if (!title || !content) return toast('Title and content are required', 'warning');
+    const res = await api('/api/admin/announcements', 'POST', { title, content, priority });
+    if (res.success) {
+        toast('Announcement published');
+        document.getElementById('annTitle').value = '';
+        document.getElementById('annContent').value = '';
+        loadAnnouncements();
+    }
+}
+
+async function toggleAnnouncement(id) {
+    await api(`/api/admin/announcements/${id}/toggle`, 'PUT');
+    loadAnnouncements();
+}
+async function deleteAnnouncement(id) {
+    if(!confirm('Delete this announcement?')) return;
+    await api(`/api/admin/announcements/${id}`, 'DELETE');
+    loadAnnouncements();
+}
+
+// ── COMMANDS ──
+async function loadCommands() {
+    try {
+        const cmds = await api('/api/admin/commands');
+        document.getElementById('commandsList').innerHTML = cmds.map(c => `
+            <div style="padding:12px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">
+                <div>
+                    <strong style="color:var(--primary);">${c.command}</strong>
+                    <div style="font-size:12px;color:rgba(255,255,255,0.6);">${c.response}</div>
+                </div>
+                <button class="btn btn-sm btn-danger" onclick="deleteCommand(${c.id})">Delete</button>
+            </div>
+        `).join('') || '<p style="color:rgba(255,255,255,0.3);">No commands created</p>';
+    } catch(e) { console.error('Error loading commands', e); }
+}
+
+async function createCommand() {
+    const cmd = document.getElementById('cmdCommand').value;
+    const resText = document.getElementById('cmdResponse').value;
+    if (!cmd || !resText) return toast('Command and response required', 'warning');
+    const res = await api('/api/admin/commands', 'POST', { command: cmd, response: resText });
+    if (res.success) {
+        toast('Command added');
+        document.getElementById('cmdCommand').value = '';
+        document.getElementById('cmdResponse').value = '';
+        loadCommands();
+    }
+}
+
+async function deleteCommand(id) {
+    await api(`/api/admin/commands/${id}`, 'DELETE');
+    loadCommands();
+}
+
+// ── BROADCAST ──
+async function sendBroadcast() {
+    const msg = document.getElementById('broadcastMsg').value;
+    if (!msg) return toast('Enter a message first', 'warning');
+    const res = await api('/api/admin/broadcast', 'POST', { message: msg });
+    if (res.success) {
+        toast('Broadcast sent to all users!');
+        document.getElementById('broadcastMsg').value = '';
+    }
+}
+
+// ── SYSTEM CONTROLS ──
+async function toggleShutdown() {
+    if (!confirm('Toggle global shutdown mode? This blocks all users except admins.')) return;
+    const res = await api('/api/admin/shutdown', 'POST', { action: 'toggle' });
+    if (res.success) toast(`Shutdown mode is now ${res.shutdown_mode === 'true' ? 'ON' : 'OFF'}`);
+}
+
+async function toggleMaintenance() {
+    const msg = document.getElementById('maintenanceMsg').value;
+    const res = await api('/api/admin/maintenance', 'POST', { message: msg });
+    if (res.success) toast(`Maintenance mode is now ${res.maintenance_mode === 'true' ? 'ON' : 'OFF'}`);
+}
+
+async function clearAllChats() {
+    if (!confirm('DANGER: This will permanently delete ALL chats and messages for ALL users. Type "CONFIRM" to proceed.')) return;
+    const check = prompt('Type "CONFIRM" to delete all chats:');
+    if (check !== 'CONFIRM') return toast('Cancelled');
+    const res = await api('/api/admin/clear-chats', 'POST');
+    if (res.success) { toast('All chats deleted!'); loadDashboard(); }
+}
+
+async function clearAnalytics() {
+    if (!confirm('Clear all analytics data?')) return;
+    const res = await api('/api/admin/clear-analytics', 'POST');
+    if (res.success) toast('Analytics cleared');
+}
+
+async function clearLogs() {
+    if (!confirm('Clear all system logs?')) return;
+    const res = await api('/api/admin/clear-logs', 'POST');
+    if (res.success) { toast('Logs cleared'); loadDashboard(); }
+}
+
+async function exportData() {
+    const res = await api('/api/admin/export-data');
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(res, null, 2));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", "nexusai_backup_" + new Date().toISOString().split('T')[0] + ".json");
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+    toast('Data exported successfully');
+}
+
+// ── CHANGE PASSWORD ──
+async function changePassword() {
+    const cur = document.getElementById('currentPw').value;
+    const newPw = document.getElementById('newPw').value;
+    const conf = document.getElementById('confirmPw').value;
+    
+    if (!cur || !newPw || !conf) return toast('Fill all fields', 'warning');
+    if (newPw !== conf) return toast('New passwords do not match', 'error');
+    if (newPw.length < 6) return toast('Password must be 6+ chars', 'warning');
+    
+    const res = await api('/api/admin/change-password', 'PUT', { current_password: cur, new_password: newPw });
+    if (res.success) {
+        toast('Password updated successfully!');
+        document.getElementById('currentPw').value = '';
+        document.getElementById('newPw').value = '';
+        document.getElementById('confirmPw').value = '';
+    } else {
+        toast(res.error, 'error');
+    }
+}
+
+</script>
+</body>
+</html>
