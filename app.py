@@ -1011,7 +1011,6 @@ def do_logout():
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 @app.route('/chat')
-@@app.route('/chat')
 @login_required
 def chat_page():
     announcements = []
