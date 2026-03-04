@@ -6,7 +6,8 @@
 ║     Rivals Gemini, ChatGPT & Claude in UI/UX                ║
 ╚══════════════════════════════════════════════════════════════╝
 """
-
+import eventlet
+eventlet.monkey_patch()
 import os
 import json
 import time
