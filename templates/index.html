@@ -9,9 +9,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* ═══════════════════════════════════════════════════════════════
-   ROOT VARIABLES & RESET
-   ═══════════════════════════════════════════════════════════════ */
 :root {
     --primary: {{ settings.primary_color }};
     --primary-rgb: 139, 92, 246;
@@ -54,9 +51,6 @@ html, body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   ANIMATED COSMIC BACKGROUND
-   ═══════════════════════════════════════════════════════════════ */
 .cosmic-bg {
     position: fixed;
     inset: 0;
@@ -83,7 +77,6 @@ html, body {
     100% { opacity: 0.85; transform: scale(0.98); }
 }
 
-/* Dot Grid */
 .dot-grid {
     position: absolute;
     inset: 0;
@@ -98,7 +91,6 @@ html, body {
     100% { background-position: 32px 32px; }
 }
 
-/* Scan Lines */
 .scan-lines {
     position: absolute;
     inset: 0;
@@ -118,7 +110,6 @@ html, body {
     50% { opacity: 0.3; }
 }
 
-/* Noise Overlay */
 .noise-overlay {
     position: absolute;
     inset: 0;
@@ -128,9 +119,6 @@ html, body {
     pointer-events: none;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   FLOATING ORBS — ENHANCED
-   ═══════════════════════════════════════════════════════════════ */
 .orb {
     position: absolute;
     border-radius: 50%;
@@ -213,9 +201,6 @@ html, body {
     66% { transform: translate(-20px, -15px) scale(0.9); }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   FLOATING PARTICLES
-   ═══════════════════════════════════════════════════════════════ */
 .particles-container {
     position: absolute;
     inset: 0;
@@ -251,9 +236,6 @@ html, body {
     100% { bottom: 110%; opacity: 0; transform: translateX(80px) scale(0.5); }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   AURORA BEAM EFFECT
-   ═══════════════════════════════════════════════════════════════ */
 .aurora-beam {
     position: absolute;
     top: 0; left: -50%;
@@ -291,9 +273,6 @@ html, body {
     50% { transform: translateX(20%); }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   GLASS CARD — ULTRA PREMIUM
-   ═══════════════════════════════════════════════════════════════ */
 .glass-card {
     background: linear-gradient(
         165deg,
@@ -322,7 +301,6 @@ html, body {
         0 0 100px -30px var(--glow-intense);
 }
 
-/* Top Shimmer Bar */
 .glass-card::before {
     content: '';
     position: absolute;
@@ -344,7 +322,6 @@ html, body {
     50% { opacity: 1; }
 }
 
-/* Card Inner Glow */
 .glass-card::after {
     content: '';
     position: absolute;
@@ -367,7 +344,6 @@ html, body {
     opacity: 0.3;
 }
 
-/* Card Content Layer */
 .card-content {
     position: relative;
     z-index: 2;
@@ -380,9 +356,6 @@ html, body {
     }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   LOGO SECTION — PREMIUM
-   ═══════════════════════════════════════════════════════════════ */
 .logo-section {
     text-align: center;
     margin-bottom: 36px;
@@ -488,9 +461,6 @@ html, body {
     letter-spacing: 0.02em;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   TAB SWITCHER — PREMIUM
-   ═══════════════════════════════════════════════════════════════ */
 .tab-container {
     display: flex;
     gap: 6px;
@@ -547,9 +517,6 @@ html, body {
     color: var(--text-secondary);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   ERROR MESSAGE — PREMIUM
-   ═══════════════════════════════════════════════════════════════ */
 .error-msg {
     background: var(--danger-soft);
     border: 1px solid rgba(239,68,68,0.25);
@@ -574,18 +541,6 @@ html, body {
     border-radius: 0 2px 2px 0;
 }
 
-.error-msg .error-icon {
-    display: inline-block;
-    margin-right: 8px;
-    font-size: 14px;
-}
-
-@keyframes errorSlide {
-    from { opacity: 0; transform: translateY(-8px) scale(0.98); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-/* Success Message */
 .success-msg {
     background: var(--success-soft);
     border: 1px solid rgba(16,185,129,0.25);
@@ -610,9 +565,11 @@ html, body {
     border-radius: 0 2px 2px 0;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   INPUT FIELDS — ULTRA PREMIUM
-   ═══════════════════════════════════════════════════════════════ */
+@keyframes errorSlide {
+    from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 .input-group {
     position: relative;
     margin-bottom: 18px;
@@ -662,10 +619,6 @@ html, body {
     background: var(--surface-3);
 }
 
-.glass-input:hover::placeholder {
-    color: var(--text-tertiary);
-}
-
 .glass-input:focus {
     border-color: var(--primary);
     background: var(--surface-3);
@@ -675,16 +628,10 @@ html, body {
         0 4px 16px rgba(0,0,0,0.1) inset;
 }
 
-.glass-input:focus::placeholder {
-    color: var(--text-tertiary);
-    transform: translateX(4px);
-}
-
 .glass-input:focus ~ .input-icon {
     color: var(--primary);
 }
 
-/* Input Focus Glow Line */
 .input-glow {
     position: absolute;
     bottom: -1px;
@@ -702,7 +649,6 @@ html, body {
     left: 10%;
 }
 
-/* Password Toggle */
 .password-toggle {
     position: absolute;
     right: 14px;
@@ -724,9 +670,6 @@ html, body {
     background: var(--surface-3);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   PRIMARY BUTTON — ULTRA PREMIUM
-   ═══════════════════════════════════════════════════════════════ */
 .btn-primary {
     position: relative;
     width: 100%;
@@ -752,12 +695,7 @@ html, body {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-        135deg,
-        rgba(255,255,255,0.15) 0%,
-        transparent 50%,
-        rgba(255,255,255,0.05) 100%
-    );
+    background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%, rgba(255,255,255,0.05) 100%);
     opacity: 0;
     transition: opacity 0.4s ease;
 }
@@ -767,12 +705,7 @@ html, body {
     position: absolute;
     top: -50%; left: -50%;
     width: 200%; height: 200%;
-    background: linear-gradient(
-        90deg,
-        transparent 30%,
-        rgba(255,255,255,0.2) 50%,
-        transparent 70%
-    );
+    background: linear-gradient(90deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
     transform: translateX(-100%) rotate(15deg);
     transition: none;
 }
@@ -785,32 +718,13 @@ html, body {
         0 0 60px -10px var(--glow-soft);
 }
 
-.btn-primary:hover::before {
-    opacity: 1;
-}
+.btn-primary:hover::before { opacity: 1; }
+.btn-primary:hover::after { animation: btnShine 1s ease forwards; }
+.btn-primary:active { transform: translateY(0) scale(0.98); }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
 
-.btn-primary:hover::after {
-    animation: btnShine 1s ease forwards;
-}
+@keyframes btnShine { to { transform: translateX(100%) rotate(15deg); } }
 
-.btn-primary:active {
-    transform: translateY(0) scale(0.98);
-    box-shadow: 0 2px 10px var(--glow-soft);
-}
-
-.btn-primary:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-    transform: none !important;
-    box-shadow: none !important;
-}
-
-.btn-primary:disabled::after,
-.btn-primary:disabled::before {
-    display: none;
-}
-
-/* Button Ripple */
 .btn-ripple {
     position: absolute;
     border-radius: 50%;
@@ -820,15 +734,8 @@ html, body {
     pointer-events: none;
 }
 
-@keyframes btnShine {
-    to { transform: translateX(100%) rotate(15deg); }
-}
+@keyframes ripple { to { transform: scale(4); opacity: 0; } }
 
-@keyframes ripple {
-    to { transform: scale(4); opacity: 0; }
-}
-
-/* Button Glow Pulse */
 .btn-glow-ring {
     position: absolute;
     inset: -3px;
@@ -844,9 +751,6 @@ html, body {
     50% { opacity: 0.3; transform: scale(1.02); }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   LOADING SPINNER
-   ═══════════════════════════════════════════════════════════════ */
 .spinner {
     display: inline-block;
     width: 20px;
@@ -869,13 +773,8 @@ html, body {
     stroke-linecap: round;
 }
 
-@keyframes spinRotate {
-    to { transform: rotate(360deg); }
-}
+@keyframes spinRotate { to { transform: rotate(360deg); } }
 
-/* ═══════════════════════════════════════════════════════════════
-   SOCIAL PROOF / SECURITY BADGE
-   ═══════════════════════════════════════════════════════════════ */
 .security-badge {
     text-align: center;
     margin-top: 28px;
@@ -920,75 +819,6 @@ html, body {
     text-transform: uppercase;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   DIVIDER
-   ═══════════════════════════════════════════════════════════════ */
-.divider {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin: 20px 0;
-}
-
-.divider-line {
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--border-2), transparent);
-}
-
-.divider-text {
-    font-size: 11px;
-    color: var(--text-muted);
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   FORM ANIMATIONS
-   ═══════════════════════════════════════════════════════════════ */
-@keyframes formSlideUp {
-    from {
-        opacity: 0;
-        transform: translateY(40px) scale(0.96);
-        filter: blur(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-        filter: blur(0);
-    }
-}
-
-@keyframes formFadeSwitch {
-    from {
-        opacity: 0;
-        transform: translateX(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-.form-animate-in {
-    animation: formSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.form-switch-animate {
-    animation: formFadeSwitch 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-/* Staggered Children */
-.stagger-1 { animation-delay: 0.1s; }
-.stagger-2 { animation-delay: 0.15s; }
-.stagger-3 { animation-delay: 0.2s; }
-.stagger-4 { animation-delay: 0.25s; }
-.stagger-5 { animation-delay: 0.3s; }
-
-/* ═══════════════════════════════════════════════════════════════
-   PASSWORD STRENGTH INDICATOR
-   ═══════════════════════════════════════════════════════════════ */
 .password-strength {
     display: flex;
     gap: 4px;
@@ -998,9 +828,7 @@ html, body {
     transition: opacity 0.3s ease;
 }
 
-.password-strength.visible {
-    opacity: 1;
-}
+.password-strength.visible { opacity: 1; }
 
 .strength-bar {
     flex: 1;
@@ -1027,9 +855,6 @@ html, body {
 .strength-text.medium { color: #FCD34D; }
 .strength-text.strong { color: #6EE7B7; }
 
-/* ═══════════════════════════════════════════════════════════════
-   VIDEO BACKGROUND
-   ═══════════════════════════════════════════════════════════════ */
 .bg-video {
     position: fixed;
     inset: 0;
@@ -1041,9 +866,6 @@ html, body {
     filter: blur(2px) saturate(0.8);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   MAIN LAYOUT
-   ═══════════════════════════════════════════════════════════════ */
 .main-container {
     position: relative;
     z-index: 10;
@@ -1059,9 +881,6 @@ html, body {
     max-width: 440px;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   CORNER DECORATIONS
-   ═══════════════════════════════════════════════════════════════ */
 .corner-deco {
     position: absolute;
     width: 60px;
@@ -1086,9 +905,6 @@ html, body {
     opacity: 0.3;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   CHECKBOX STYLES
-   ═══════════════════════════════════════════════════════════════ */
 .custom-checkbox {
     display: flex;
     align-items: center;
@@ -1098,13 +914,10 @@ html, body {
     -webkit-tap-highlight-color: transparent;
 }
 
-.custom-checkbox input[type="checkbox"] {
-    display: none;
-}
+.custom-checkbox input[type="checkbox"] { display: none; }
 
 .checkbox-visual {
-    width: 18px;
-    height: 18px;
+    width: 18px; height: 18px;
     border: 1.5px solid var(--border-2);
     border-radius: 6px;
     display: flex;
@@ -1121,19 +934,14 @@ html, body {
 }
 
 .checkbox-visual svg {
-    width: 12px;
-    height: 12px;
-    stroke: #fff;
-    stroke-width: 3;
-    fill: none;
-    opacity: 0;
-    transform: scale(0);
+    width: 12px; height: 12px;
+    stroke: #fff; stroke-width: 3; fill: none;
+    opacity: 0; transform: scale(0);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .custom-checkbox input:checked ~ .checkbox-visual svg {
-    opacity: 1;
-    transform: scale(1);
+    opacity: 1; transform: scale(1);
 }
 
 .checkbox-label {
@@ -1142,111 +950,6 @@ html, body {
     font-weight: 400;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   LINK STYLES
-   ═══════════════════════════════════════════════════════════════ */
-.link-text {
-    color: var(--primary);
-    font-size: 13px;
-    font-weight: 500;
-    text-decoration: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-}
-
-.link-text::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 0;
-    height: 1px;
-    background: var(--primary);
-    transition: width 0.3s ease;
-}
-
-.link-text:hover {
-    color: color-mix(in srgb, var(--primary) 80%, #fff);
-}
-
-.link-text:hover::after {
-    width: 100%;
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   RESPONSIVE
-   ═══════════════════════════════════════════════════════════════ */
-@media (max-width: 480px) {
-    .glass-card {
-        border-radius: 22px;
-    }
-    .site-title {
-        font-size: 26px;
-    }
-    .logo-bg {
-        width: 68px;
-        height: 68px;
-        border-radius: 20px;
-    }
-    .logo-icon {
-        font-size: 34px;
-    }
-    .glass-input {
-        padding: 13px 16px 13px 42px;
-        font-size: 14px;
-    }
-    .btn-primary {
-        padding: 14px 24px;
-        font-size: 14px;
-    }
-    .orb-1, .orb-2, .orb-3, .orb-4, .orb-5 {
-        opacity: 0.15;
-    }
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   SCROLL BAR (if needed)
-   ═══════════════════════════════════════════════════════════════ */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--surface-4); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--border-3); }
-
-/* ═══════════════════════════════════════════════════════════════
-   TOOLTIP
-   ═══════════════════════════════════════════════════════════════ */
-.tooltip {
-    position: relative;
-}
-
-.tooltip::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%) translateY(4px);
-    padding: 6px 12px;
-    border-radius: 8px;
-    background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(10px);
-    color: #fff;
-    font-size: 11px;
-    white-space: nowrap;
-    pointer-events: none;
-    opacity: 0;
-    transition: all 0.3s ease;
-    z-index: 100;
-}
-
-.tooltip:hover::after {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   FORM ROW HELPERS
-   ═══════════════════════════════════════════════════════════════ */
 .form-row {
     display: flex;
     align-items: center;
@@ -1254,9 +957,6 @@ html, body {
     margin-bottom: 24px;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   ANIMATED BORDER GRADIENT
-   ═══════════════════════════════════════════════════════════════ */
 .gradient-border {
     position: absolute;
     inset: -1px;
@@ -1278,54 +978,31 @@ html, body {
     filter: blur(2px);
 }
 
-.glass-card:hover .gradient-border {
-    opacity: 0.15;
+.glass-card:hover .gradient-border { opacity: 0.15; }
+@keyframes borderSpin { to { transform: rotate(360deg); } }
+
+@keyframes formSlideUp {
+    from { opacity: 0; transform: translateY(40px) scale(0.96); filter: blur(10px); }
+    to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
 }
 
-@keyframes borderSpin {
-    to { transform: rotate(360deg); }
+@keyframes formFadeSwitch {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   KEYFRAME FOR INPUT LABEL FLOAT (reserved)
-   ═══════════════════════════════════════════════════════════════ */
-@keyframes labelFloat {
-    from { transform: translateY(0); font-size: 15px; }
-    to { transform: translateY(-24px); font-size: 11px; }
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   MICRO-INTERACTIONS
-   ═══════════════════════════════════════════════════════════════ */
-.hover-lift {
-    transition: transform 0.3s ease;
-}
-.hover-lift:hover {
-    transform: translateY(-2px);
-}
-
-.hover-glow {
-    transition: box-shadow 0.3s ease;
-}
-.hover-glow:hover {
-    box-shadow: 0 0 20px var(--glow-soft);
-}
+.form-animate-in { animation: formSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.form-switch-animate { animation: formFadeSwitch 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
 </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     VIDEO BACKGROUND (conditional)
-     ═══════════════════════════════════════════════════════════════ -->
 {% if settings.background_video_url %}
 <video class="bg-video" autoplay muted loop playsinline>
     <source src="{{ settings.background_video_url }}" type="video/mp4">
 </video>
 {% endif %}
 
-<!-- ═══════════════════════════════════════════════════════════════
-     COSMIC BACKGROUND
-     ═══════════════════════════════════════════════════════════════ -->
 <div class="cosmic-bg">
     <div class="dot-grid"></div>
     <div class="scan-lines"></div>
@@ -1338,40 +1015,21 @@ html, body {
     <div class="aurora-beam"></div>
     <div class="aurora-beam-2"></div>
     <div class="particles-container">
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
     </div>
 </div>
 
-<!-- Hidden Audio -->
-<audio id="loginAudio" preload="auto" style="display:none"></audio>
-
-<!-- ═══════════════════════════════════════════════════════════════
-     MAIN CONTENT
-     ═══════════════════════════════════════════════════════════════ -->
 <div class="main-container">
     <div class="card-wrapper form-animate-in">
         <div class="glass-card">
-            <!-- Corner Decorations -->
             <div class="corner-deco corner-deco-tl"></div>
             <div class="corner-deco corner-deco-br"></div>
-            <!-- Animated Border -->
             <div class="gradient-border"></div>
 
             <div class="card-content">
-                <!-- ═══════════════════════════════════════
-                     LOGO & BRANDING
-                     ═══════════════════════════════════════ -->
                 <div class="logo-section">
                     <div class="logo-wrapper">
                         <div class="logo-ring"></div>
@@ -1384,9 +1042,6 @@ html, body {
                     <p class="site-tagline">{{ settings.site_tagline }}</p>
                 </div>
 
-                <!-- ═══════════════════════════════════════
-                     TAB SWITCHER
-                     ═══════════════════════════════════════ -->
                 <div class="tab-container" id="tabContainer">
                     <div class="tab-slider" id="tabSlider"></div>
                     <button class="tab-btn active" onclick="switchTab('login')" id="tab-login">
@@ -1405,21 +1060,16 @@ html, body {
                     {% endif %}
                 </div>
 
-                <!-- ═══════════════════════════════════════
-                     ERROR / SUCCESS MESSAGES
-                     ═══════════════════════════════════════ -->
                 <div class="error-msg" id="errorMsg">
-                    <span class="error-icon">⚠️</span>
+                    <span class="error-icon" style="margin-right:8px;">⚠️</span>
                     <span id="errorText"></span>
                 </div>
                 <div class="success-msg" id="successMsg">
-                    <span class="error-icon">✅</span>
+                    <span class="error-icon" style="margin-right:8px;">✅</span>
                     <span id="successText"></span>
                 </div>
 
-                <!-- ═══════════════════════════════════════
-                     LOGIN FORM
-                     ═══════════════════════════════════════ -->
+                <!-- LOGIN FORM -->
                 <form id="loginForm" onsubmit="handleLogin(event)">
                     <div class="input-group">
                         <span class="input-icon">
@@ -1453,13 +1103,10 @@ html, body {
                         <label class="custom-checkbox">
                             <input type="checkbox" id="rememberMe">
                             <span class="checkbox-visual">
-                                <svg viewBox="0 0 24 24">
-                                    <polyline points="20 6 9 17 4 12"/>
-                                </svg>
+                                <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
                             </span>
                             <span class="checkbox-label">Remember me</span>
                         </label>
-                        <!-- <span class="link-text" onclick="showForgotPassword()">Forgot password?</span> -->
                     </div>
 
                     <div style="position:relative;">
@@ -1473,9 +1120,7 @@ html, body {
                             </span>
                             <span id="loginBtnLoader" style="display:none;">
                                 <span class="spinner">
-                                    <svg viewBox="0 0 24 24">
-                                        <circle cx="12" cy="12" r="10"/>
-                                    </svg>
+                                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                 </span>
                                 <span style="margin-left:8px;">Authenticating...</span>
                             </span>
@@ -1483,9 +1128,7 @@ html, body {
                     </div>
                 </form>
 
-                <!-- ═══════════════════════════════════════
-                     REGISTER FORM
-                     ═══════════════════════════════════════ -->
+                <!-- REGISTER FORM -->
                 <form id="registerForm" onsubmit="handleRegister(event)" style="display:none;">
                     <div class="input-group">
                         <span class="input-icon">
@@ -1524,7 +1167,6 @@ html, body {
                         </button>
                     </div>
 
-                    <!-- Password Strength -->
                     <div class="password-strength" id="passwordStrength">
                         <div class="strength-bar" id="str1"></div>
                         <div class="strength-bar" id="str2"></div>
@@ -1554,9 +1196,7 @@ html, body {
                             </span>
                             <span id="regBtnLoader" style="display:none;">
                                 <span class="spinner">
-                                    <svg viewBox="0 0 24 24">
-                                        <circle cx="12" cy="12" r="10"/>
-                                    </svg>
+                                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                 </span>
                                 <span style="margin-left:8px;">Creating Account...</span>
                             </span>
@@ -1564,9 +1204,6 @@ html, body {
                     </div>
                 </form>
 
-                <!-- ═══════════════════════════════════════
-                     SECURITY BADGE
-                     ═══════════════════════════════════════ -->
                 <div class="security-badge">
                     <div class="security-badge-inner">
                         <div class="security-dot"></div>
@@ -1581,13 +1218,11 @@ html, body {
     </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     JAVASCRIPT — ALL ORIGINAL LOGIC PRESERVED
-     ═══════════════════════════════════════════════════════════════ -->
 <script>
-// ─────────────────────────────────────
-// TAB SWITCHING
-// ─────────────────────────────────────
+/* ═══════════════════════════════════════════════════════════════
+   LOGIN PAGE JS — NO AUDIO HERE, AUDIO PLAYS ON CHAT PAGE
+   ═══════════════════════════════════════════════════════════════ */
+
 function switchTab(tab) {
     document.getElementById('errorMsg').style.display = 'none';
     document.getElementById('successMsg').style.display = 'none';
@@ -1611,15 +1246,11 @@ function switchTab(tab) {
     }
 }
 
-// ─────────────────────────────────────
-// ERROR / SUCCESS DISPLAY
-// ─────────────────────────────────────
 function showError(msg) {
     const el = document.getElementById('errorMsg');
     document.getElementById('errorText').textContent = msg;
     el.style.display = 'block';
     document.getElementById('successMsg').style.display = 'none';
-    // Auto hide after 5s
     setTimeout(() => { el.style.display = 'none'; }, 5000);
 }
 
@@ -1630,23 +1261,6 @@ function showSuccess(msg) {
     document.getElementById('errorMsg').style.display = 'none';
 }
 
-// ─────────────────────────────────────
-// AUDIO PLAYER
-// ─────────────────────────────────────
-function playLoginAudio(url) {
-    try {
-        const audio = document.getElementById('loginAudio');
-        if (url && audio) {
-            audio.src = url;
-            audio.volume = 0.3;
-            audio.play().catch(() => {});
-        }
-    } catch(e) {}
-}
-
-// ─────────────────────────────────────
-// PASSWORD TOGGLE
-// ─────────────────────────────────────
 function togglePassword(inputId, btn) {
     const input = document.getElementById(inputId);
     const eyeOpen = btn.querySelector('.eye-open');
@@ -1663,9 +1277,6 @@ function togglePassword(inputId, btn) {
     }
 }
 
-// ─────────────────────────────────────
-// PASSWORD STRENGTH CHECKER
-// ─────────────────────────────────────
 function checkPasswordStrength(password) {
     const container = document.getElementById('passwordStrength');
     const text = document.getElementById('strengthText');
@@ -1685,7 +1296,6 @@ function checkPasswordStrength(password) {
     if (/[0-9]/.test(password)) score++;
     if (/[^A-Za-z0-9]/.test(password)) score++;
 
-    // Normalize to 4 max
     let level = Math.min(4, score);
 
     bars.forEach((bar, i) => {
@@ -1704,9 +1314,6 @@ function checkPasswordStrength(password) {
     else { text.textContent = 'Very strong password'; text.classList.add('strong'); }
 }
 
-// ─────────────────────────────────────
-// BUTTON RIPPLE EFFECT
-// ─────────────────────────────────────
 document.querySelectorAll('.btn-primary').forEach(btn => {
     btn.addEventListener('click', function(e) {
         const rect = btn.getBoundingClientRect();
@@ -1721,9 +1328,7 @@ document.querySelectorAll('.btn-primary').forEach(btn => {
     });
 });
 
-// ─────────────────────────────────────
-// LOGIN HANDLER — ORIGINAL LOGIC
-// ─────────────────────────────────────
+/* ─── LOGIN — On success, save audio_url to localStorage, redirect to chat ─── */
 async function handleLogin(e) {
     e.preventDefault();
     const btn = document.getElementById('loginBtn');
@@ -1744,12 +1349,14 @@ async function handleLogin(e) {
         const data = await res.json();
         if (data.success) {
             showSuccess('Login successful! Redirecting...');
+
+            // ✅ Save audio URL to localStorage so CHAT PAGE can play it
             if (data.play_audio && data.audio_url) {
-                playLoginAudio(data.audio_url);
-                setTimeout(() => { window.location.href = '/chat'; }, 1500);
-            } else {
-                window.location.href = '/chat';
+                localStorage.setItem('entry_audio_url', data.audio_url);
             }
+
+            // Redirect to chat page (audio will play THERE)
+            setTimeout(() => { window.location.href = '/chat'; }, 800);
         } else {
             showError(data.error || 'Login failed');
             btn.disabled = false;
@@ -1764,9 +1371,7 @@ async function handleLogin(e) {
     }
 }
 
-// ─────────────────────────────────────
-// REGISTER HANDLER — ORIGINAL LOGIC
-// ─────────────────────────────────────
+/* ─── REGISTER — Same approach ─── */
 async function handleRegister(e) {
     e.preventDefault();
     const pw = document.getElementById('reg-password').value;
@@ -1792,12 +1397,13 @@ async function handleRegister(e) {
         const data = await res.json();
         if (data.success) {
             showSuccess('Account created! Redirecting...');
+
+            // ✅ Save audio URL to localStorage so CHAT PAGE can play it
             if (data.play_audio && data.audio_url) {
-                playLoginAudio(data.audio_url);
-                setTimeout(() => { window.location.href = '/chat'; }, 1500);
-            } else {
-                window.location.href = '/chat';
+                localStorage.setItem('entry_audio_url', data.audio_url);
             }
+
+            setTimeout(() => { window.location.href = '/chat'; }, 800);
         } else {
             showError(data.error || 'Registration failed');
             btn.disabled = false;
@@ -1812,31 +1418,16 @@ async function handleRegister(e) {
     }
 }
 
-// ─────────────────────────────────────
-// KEYBOARD SHORTCUT — Enter on inputs
-// ─────────────────────────────────────
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Tab') {
-        // Allow normal tab behavior
-    }
-});
-
-// ─────────────────────────────────────
-// INITIAL TAB SLIDER SIZING (handle single tab)
-// ─────────────────────────────────────
+// Handle single tab (no register button)
 (function() {
     const tabReg = document.getElementById('tab-register');
     if (!tabReg) {
         const slider = document.getElementById('tabSlider');
-        if (slider) {
-            slider.style.width = 'calc(100% - 10px)';
-        }
+        if (slider) slider.style.width = 'calc(100% - 10px)';
     }
 })();
 
-// ─────────────────────────────────────
-// INTERACTIVE CARD TILT (mouse)
-// ─────────────────────────────────────
+// Card tilt effect
 const card = document.querySelector('.glass-card');
 if (card && window.innerWidth > 768) {
     card.addEventListener('mousemove', function(e) {
