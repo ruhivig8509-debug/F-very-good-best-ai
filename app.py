@@ -1019,22 +1019,23 @@ def chat_page():
         announcements = Announcement.query.filter_by(is_active=True).order_by(
             desc(Announcement.created_at)).limit(5).all()
     
-    # User ke initials nikalne ke liye logic
-    initials = current_user.username[0].upper() if current_user.username else "U"
-
     return render_template('chat.html', settings={
         'site_name': get_setting('site_name', 'NexusAI Pro'),
-        'site_tagline': get_setting('site_tagline', 'God-Level AI Assistant'),
-        'site_icon': get_setting('site_logo_emoji', '🧠'), # Icon variable fix
+        'site_logo_emoji': get_setting('site_logo_emoji', '🧠'),
         'primary_color': get_setting('primary_color', '#8B5CF6'),
         'secondary_color': get_setting('secondary_color', '#06B6D4'),
         'accent_color': get_setting('accent_color', '#F59E0B'),
-        'login_audio_url': get_setting('login_audio_url', ''),
-        'enable_login_audio': get_setting('enable_login_audio', 'false'),
-        'user_name': current_user.username, # Variable name fix
-        'user_initials': initials, # Initials fix
-        'user_plan': 'Pro Plan' if current_user.is_admin else 'Free Plan',
-        'model_name': get_setting('default_model', 'llama-3.3-70b-versatile'),
+        'welcome_message': get_setting('welcome_message', 'Hello! How can I help you today?'),
+        'chat_placeholder': get_setting('chat_placeholder', 'Ask me anything...'),
+        'enable_markdown': get_setting('enable_markdown', 'true'),
+        'custom_css': get_setting('custom_css', ''),
+        'footer_text': get_setting('footer_text', 'Powered by NexusAI Pro'),
+        'user': {
+            'id': current_user.id,
+            'username': current_user.username,
+            'is_admin': current_user.is_admin
+        },
+        'announcements': [{'title': a.title, 'content': a.content, 'priority': a.priority} for a in announcements]
     })
 
 
